@@ -1,0 +1,7 @@
+[docker]
+192.168.1.107
+
+[docker:vars]
+ansible_user=ansible
+ansible_password=ans4SBR
+ansible_become_password=ans4SBR

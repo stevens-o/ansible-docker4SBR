@@ -1,0 +1,48 @@
+
+---
+- hosts: docker
+  become: true
+  tasks:
+    - name: installation des dependances
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+
+    - name: ajout cle GPG
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: ajout repo docker
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: installation docker
+      apt:
+        name: "{{item}}"
+        state: latest
+        update_cache: yes
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io  
+
+    - name: service docker actif
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: restart docker
+      service: 
+        name: docker 
+        state: restarted
